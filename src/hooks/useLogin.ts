@@ -10,8 +10,8 @@ function useLogin() {
 
   const login = async (phoneNumber: string, pin: string) => {
     const response = await mutate(
-      "https://little-rabbit-67.convex.site/auth/personnel",
-      fetcher("https://little-rabbit-67.convex.site/auth/personnel", {
+      "https://different-armadillo-940.convex.site/auth/personnel",
+      fetcher("https://different-armadillo-940.convex.site/auth/personnel", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -19,7 +19,9 @@ function useFetchCurrentUser() {
     });
 
   const { data, error, isLoading } = useSWR(
-    token ? `https://little-rabbit-67.convex.site/currentUser?id=${id}` : null,
+    token
+      ? `https://different-armadillo-940.convex.site/currentUser?id=${id}`
+      : null,
     fetcher
   );
 
