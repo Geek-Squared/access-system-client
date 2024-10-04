@@ -1,0 +1,150 @@
+$primary-color: #4caf50;
+$error-color: #f44336;
+$success-color: #4caf50;
+
+/* Container for centering the form */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 160px;
+
+  @media (max-width: 768px) {
+    margin-right: 0;
+    padding: 20px;
+  }
+}
+
+/* Flexbox for input container */
+.input-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form box styling */
+.form-box {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 15px;
+    box-shadow: none;
+  }
+}
+
+/* Heading styling */
+h2 {
+  text-align: center;
+  color: $primary-color;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
+}
+
+/* Form styling */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label styling */
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+  font-size: 1rem;
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
+}
+
+/* Input fields styling */
+input {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+
+  &:focus {
+    border-color: $primary-color;
+    outline: none;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px;
+    font-size: 16px;
+  }
+}
+
+/* Button styling */
+button {
+  padding: 10px;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px;
+    font-size: 14px;
+  }
+}
+
+/* Error message styling */
+.error-message {
+  color: $error-color;
+  text-align: center;
+}
+
+/* Success message styling */
+.success-message {
+  color: $success-color;
+  text-align: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .form-box {
+    width: 100%;
+    margin: 0 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 20px;
+  }
+
+  .form-box {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  button {
+    font-size: 14px;
+  }
+}

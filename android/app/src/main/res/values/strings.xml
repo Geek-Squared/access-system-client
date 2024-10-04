@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">access-app</string>
+    <string name="title_activity_main">access-app</string>
+    <string name="package_name">com.adberrytech.access</string>
+    <string name="custom_url_scheme">com.adberrytech.access</string>
+</resources>

@@ -1,0 +1,37 @@
+.form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-input {
+    margin-bottom: 10px;
+    padding: 12px;  // Adds padding inside the input field
+    border-radius: 8px;  // Rounds the corners
+    border: 1px solid #dcdcdc;  // Light border color
+    font-size: 16px;  // Adjusts font size
+    background-color: #f9f9f9;  // Light gray background
+    color: #333;  // Text color
+  
+    // Placeholder styling
+    &::placeholder {
+      color: #aaa;  // Subtle gray for placeholder text
+      font-size: 14px;  // Slightly smaller than input text
+    }
+  
+    // For focus state (when user clicks or taps on input)
+    &:focus {
+      outline: none;  // Remove default outline
+      border-color: #888;  // Darker border on focus
+      background-color: #fff;  // White background on focus
+    }
+  }
+  
+  .submit-button {
+    background-color: #3f3d56;
+    height: 40px;
+    border-radius: 10px;
+    color: #ffffff;
+    width: 100%;
+    margin-top: 40px;
+  }
+  

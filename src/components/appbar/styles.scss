@@ -1,0 +1,63 @@
+// Style for the main App Bar
+.app-bar {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  width: 90%;
+  z-index: 1000; // Ensure App Bar is above other content
+
+  .app-bar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #3f3d56;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .icon-group {
+      display: flex;
+      gap: 15px;
+    }
+
+    .icon {
+      color: #3f3d56;
+      cursor: pointer;
+    }
+  }
+
+  // Search bar section
+  .app-bar-search {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+
+    input {
+      width: 90%;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid #e0e0e0;
+      outline: none;
+      font-size: 14px;
+      background-color: #f7f7f7;
+
+      &::placeholder {
+        color: #999;
+      }
+    }
+  }
+}
+
+// Add some margin to the main content to avoid overlapping
+.main-content {
+  margin-top: 120px; // Adjust this based on the height of the App Bar
+}
