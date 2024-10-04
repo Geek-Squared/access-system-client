@@ -7,7 +7,7 @@ export const createOrganization = mutation({
     logoUrl: v.optional(v.string()),
     createdBy: v.id("user"),
     primaryColor: v.optional(v.string()),
-    personnel: v.optional(v.array(v.id("personnel"))),
+    personnel: v.optional(v.array(v.id("user"))),
     secondaryColor: v.optional(v.string()),
     sites: v.optional(v.array(v.id("site"))),
     address: v.object({

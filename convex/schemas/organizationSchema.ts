@@ -14,6 +14,6 @@ export const organizationSchema = {
   }),
   secondaryColor: v.optional(v.string()),
   users: v.optional(v.array(v.id("user"))),
-  personnel: v.optional(v.array(v.id("personnel"))),
+  personnel: v.optional(v.array(v.id("user"))),
   sites: v.optional(v.array(v.id("site"))),
 };
