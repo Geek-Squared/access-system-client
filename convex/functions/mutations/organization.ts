@@ -40,3 +40,20 @@ export const createOrganization = mutation({
     };
   },
 });
+
+export const updateOrganization = mutation(
+  async (ctx, { id, ...fieldsToUpdate }: any) => {
+    try {
+      const org = await ctx.db.get(id);
+      if (!org) {
+        throw new Error("Organization not found");
+      }
+
+      // Update only the provided fields
+      await ctx.db.patch(id, fieldsToUpdate);
+      return { message: "Organization updated successfully" };
+    } catch (error: any) {
+      throw new Error("Update failed: " + error.message);
+    }
+  }
+);

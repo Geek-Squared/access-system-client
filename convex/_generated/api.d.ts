@@ -18,9 +18,9 @@ import type {
 import type * as auth from "../auth.js";
 import type * as functions_mutations_authenticateAdmin from "../functions/mutations/authenticateAdmin.js";
 import type * as functions_mutations_authenticatePersonnel from "../functions/mutations/authenticatePersonnel.js";
-import type * as functions_mutations_createGuest from "../functions/mutations/createGuest.js";
-import type * as functions_mutations_createOrganization from "../functions/mutations/createOrganization.js";
-import type * as functions_mutations_createPersonnel from "../functions/mutations/createPersonnel.js";
+import type * as functions_mutations_guest from "../functions/mutations/guest.js";
+import type * as functions_mutations_organization from "../functions/mutations/organization.js";
+import type * as functions_mutations_personnel from "../functions/mutations/personnel.js";
 import type * as functions_mutations_site from "../functions/mutations/site.js";
 import type * as functions_mutations_user from "../functions/mutations/user.js";
 import type * as functions_mutations_visitor from "../functions/mutations/visitor.js";
@@ -52,9 +52,9 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   "functions/mutations/authenticateAdmin": typeof functions_mutations_authenticateAdmin;
   "functions/mutations/authenticatePersonnel": typeof functions_mutations_authenticatePersonnel;
-  "functions/mutations/createGuest": typeof functions_mutations_createGuest;
-  "functions/mutations/createOrganization": typeof functions_mutations_createOrganization;
-  "functions/mutations/createPersonnel": typeof functions_mutations_createPersonnel;
+  "functions/mutations/guest": typeof functions_mutations_guest;
+  "functions/mutations/organization": typeof functions_mutations_organization;
+  "functions/mutations/personnel": typeof functions_mutations_personnel;
   "functions/mutations/site": typeof functions_mutations_site;
   "functions/mutations/user": typeof functions_mutations_user;
   "functions/mutations/visitor": typeof functions_mutations_visitor;

@@ -35,7 +35,7 @@ const handleCorsOptions = (request: Request) => {
         "Access-Control-Allow-Origin": clientOrigin,
         "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Max-Age": "86400",  // Cache the preflight response for 1 day
+        "Access-Control-Max-Age": "86400",
       },
       status: 204,
     });
@@ -252,7 +252,7 @@ http.route({
 
     try {
       const organizationId = await ctx.runMutation(
-        api.functions.mutations.createOrganization.createOrganization,
+        api.functions.mutations.organization.createOrganization,
         data
       );
       return new Response(JSON.stringify({ organizationId }), {
@@ -280,6 +280,54 @@ http.route({
       },
       status: 200,
     });
+  }),
+});
+
+http.route({
+  path: "/organization",
+  method: "PATCH",
+  handler: httpAction(async (ctx, request) => {
+    const url = new URL(request.url);
+    const orgId = url.searchParams.get("id");
+
+    if (!orgId) {
+      return new Response("Organization ID is required", { status: 400 });
+    }
+
+    const data = await request.json();
+    const fieldsToUpdate = data;
+
+    if (Object.keys(fieldsToUpdate).length === 0) {
+      return new Response("No fields provided for update", { status: 400 });
+    }
+
+    try {
+      //@ts-ignore
+      const user = await ctx.runQuery(api.user.get, { id: orgId });
+
+      if (!user) {
+        return new Response("Organization not found", { status: 404 });
+      }
+
+      // Update the fields
+      await ctx.runMutation(api.functions.mutations.site.updateSite, {
+        id: orgId,
+        ...fieldsToUpdate,
+      });
+
+      return new Response(
+        JSON.stringify({ message: "Organization updated successfully" }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": clientOrigin,
+          },
+        }
+      );
+    } catch (error: any) {
+      return new Response(error.message, { status: 500 });
+    }
   }),
 });
 
@@ -418,7 +466,7 @@ http.route({
 
     try {
       const personnelId = await ctx.runMutation(
-        api.functions.mutations.createPersonnel.createPersonnel,
+        api.functions.mutations.personnel.createPersonnel,
         data
       );
       return new Response(JSON.stringify({ personnelId }), {
