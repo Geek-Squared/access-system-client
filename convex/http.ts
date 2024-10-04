@@ -23,8 +23,9 @@ if (typeof global !== "undefined") {
 const http = httpRouter();
 
 const handleCorsOptions = (request: Request) => {
-  const clientOrigin = process.env.CLIENT_ORIGIN || "https://accessme-admin.vercel.app";
-  
+  const clientOrigin =
+    process.env.CLIENT_ORIGIN || "https://accessme-admin.vercel.app";
+
   if (
     request.headers.get("Origin") &&
     request.headers.get("Access-Control-Request-Method") &&
@@ -33,14 +34,15 @@ const handleCorsOptions = (request: Request) => {
     return new Response(null, {
       headers: {
         "Access-Control-Allow-Origin": clientOrigin,
-        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Max-Age": "86400",
       },
       status: 204,
     });
   }
-  
+
   return new Response(null, {
     headers: {
       "Access-Control-Allow-Origin": clientOrigin,
@@ -51,7 +53,8 @@ const handleCorsOptions = (request: Request) => {
   });
 };
 
-const clientOrigin = process.env.CLIENT_ORIGIN || "https://accessme-admin.vercel.app";
+const clientOrigin =
+  process.env.CLIENT_ORIGIN || "https://accessme-admin.vercel.app";
 
 const validateRequiredFields = (data: any, fields: string[]) => {
   for (const field of fields) {
@@ -310,10 +313,13 @@ http.route({
       }
 
       // Update the fields
-      await ctx.runMutation(api.functions.mutations.site.updateSite, {
-        id: orgId,
-        ...fieldsToUpdate,
-      });
+      await ctx.runMutation(
+        api.functions.mutations.organization.updateOrganization,
+        {
+          id: orgId,
+          ...fieldsToUpdate,
+        }
+      );
 
       return new Response(
         JSON.stringify({ message: "Organization updated successfully" }),

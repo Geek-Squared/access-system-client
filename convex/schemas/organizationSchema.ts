@@ -13,7 +13,7 @@ export const organizationSchema = {
     country: v.string(),
   }),
   secondaryColor: v.optional(v.string()),
-  users: v.optional(v.array(v.id("user"))),
-  personnel: v.optional(v.array(v.id("user"))),
-  sites: v.optional(v.array(v.id("site"))),
+  users: v.optional(v.array(v.string())),
+  personnel: v.optional(v.array(v.string())),
+  sites: v.optional(v.array(v.string())),
 };

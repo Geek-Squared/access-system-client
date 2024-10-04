@@ -11,8 +11,8 @@ export const createSite = mutation({
       street: v.string(),
       city: v.string(),
     }),
-    personnel: v.optional(v.array(v.id("user"))),
-    visitors: v.optional(v.array(v.id("visitor"))),
+    personnel: v.optional(v.array(v.string())),
+    visitors: v.optional(v.array(v.string())),
   }),
   handler: async (
     ctx,
