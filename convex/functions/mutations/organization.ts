@@ -49,11 +49,39 @@ export const updateOrganization = mutation(
         throw new Error("Organization not found");
       }
 
+      // Merge new values with existing arrays
+      const updatedFields = { ...fieldsToUpdate };
+
+      if (fieldsToUpdate.personnel) {
+        updatedFields.personnel = [
+          //@ts-expect-error
+          ...(org?.personnel || []),
+          ...fieldsToUpdate.personnel,
+        ];
+      }
+
+      if (fieldsToUpdate.users) {
+        updatedFields.users = [
+          //@ts-expect-error
+          ...(org.users || []),
+          ...fieldsToUpdate.users,
+        ];
+      }
+
+      if (fieldsToUpdate.sites) {
+        updatedFields.sites = [
+          //@ts-expect-error
+          ...(org.sites || []),
+          ...fieldsToUpdate.sites,
+        ];
+      }
+
       // Update only the provided fields
-      await ctx.db.patch(id, fieldsToUpdate);
+      await ctx.db.patch(id, updatedFields);
       return { message: "Organization updated successfully" };
     } catch (error: any) {
       throw new Error("Update failed: " + error.message);
     }
   }
 );
+
