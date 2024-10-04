@@ -23,26 +23,35 @@ if (typeof global !== "undefined") {
 const http = httpRouter();
 
 const handleCorsOptions = (request: Request) => {
-  const headers = request.headers;
-  const clientOrigin = process.env.CLIENT_ORIGIN || "http://localhost:5174";
-
+  const clientOrigin = process.env.CLIENT_ORIGIN || "https://accessme-admin.vercel.app";
+  
   if (
-    headers.get("Origin") !== null &&
-    headers.get("Access-Control-Request-Method") !== null &&
-    headers.get("Access-Control-Request-Headers") !== null
+    request.headers.get("Origin") &&
+    request.headers.get("Access-Control-Request-Method") &&
+    request.headers.get("Access-Control-Request-Headers")
   ) {
     return new Response(null, {
-      headers: new Headers({
-        "Access-Control-Allow-Origin": clientOrigin, // Ensure this is defined correctly
-        "Access-Control-Allow-Methods": "POST",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization, Digest",
-        "Access-Control-Max-Age": "86400",
-      }),
+      headers: {
+        "Access-Control-Allow-Origin": clientOrigin,
+        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Max-Age": "86400",  // Cache the preflight response for 1 day
+      },
+      status: 204,
     });
-  } else {
-    return new Response();
   }
+  
+  return new Response(null, {
+    headers: {
+      "Access-Control-Allow-Origin": clientOrigin,
+      "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+    status: 400,
+  });
 };
+
+const clientOrigin = process.env.CLIENT_ORIGIN || "https://accessme-admin.vercel.app";
 
 const validateRequiredFields = (data: any, fields: string[]) => {
   for (const field of fields) {
@@ -98,7 +107,7 @@ http.route({
           status: 201,
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+            "Access-Control-Allow-Origin": clientOrigin,
           },
         }
       );
@@ -134,7 +143,7 @@ http.route({
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+          "Access-Control-Allow-Origin": clientOrigin,
           Vary: "origin",
         },
       });
@@ -175,7 +184,7 @@ http.route({
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+          "Access-Control-Allow-Origin": clientOrigin,
         },
       });
     } catch (error: any) {
@@ -210,7 +219,7 @@ http.route({
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+          "Access-Control-Allow-Origin": clientOrigin,
         },
       });
     } catch (error: any) {
@@ -250,7 +259,7 @@ http.route({
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+          "Access-Control-Allow-Origin": clientOrigin,
           Vary: "origin",
         },
       });
@@ -318,7 +327,7 @@ http.route({
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+          "Access-Control-Allow-Origin": clientOrigin,
           Vary: "origin",
         },
       });
@@ -366,7 +375,7 @@ http.route({
           status: 200,
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+            "Access-Control-Allow-Origin": clientOrigin,
           },
         }
       );
@@ -416,7 +425,7 @@ http.route({
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+          "Access-Control-Allow-Origin": clientOrigin,
           Vary: "origin",
         },
       });
@@ -502,7 +511,7 @@ http.route({
           status: 201,
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+            "Access-Control-Allow-Origin": clientOrigin,
             Vary: "origin",
           },
         }
@@ -544,7 +553,7 @@ http.route({
           status: 201,
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+            "Access-Control-Allow-Origin": clientOrigin,
             Vary: "origin",
           },
         }
@@ -594,7 +603,7 @@ http.route({
           status: 200,
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": process.env.CLIENT_ORIGIN!,
+            "Access-Control-Allow-Origin": clientOrigin,
           },
         }
       );
