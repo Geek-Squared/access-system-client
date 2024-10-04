@@ -1,0 +1,7 @@
+[build]
+  command = "npm install --legacy-peer-deps && npx convex deploy --cmd 'npm run build'"
+  publish = "build"  # This is where the React build will be placed
+
+[context.production.environment]
+  NODE_ENV = "production"
+  CONVEX_DEPLOY_KEY = "prod:different-armadillo-940|eyJ2MiI6ImIzYWU2YjFmNjE1OTQwM2FiMDgxMjgzNDA2ZTA4N2E4In0="
