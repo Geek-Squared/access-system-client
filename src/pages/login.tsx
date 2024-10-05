@@ -10,7 +10,7 @@ const Login = () => {
   const [pin, setPin] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [loginAttempted, setLoginAttempted] = useState(false); // Track login attempts
+  const [loginAttempted, setLoginAttempted] = useState(false);
 
   const { login, isLoading, isError } = useLogin();
   const { setToken } = useAuth();
@@ -21,18 +21,18 @@ const Login = () => {
     }
   }, [isError, loginAttempted]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: any) => {
     e.preventDefault();
-    setLoginAttempted(true); // Mark that a login attempt has been made
+    setLoginAttempted(true);
 
     try {
       const response = await login(phoneNumber, pin);
 
       if (response.token) {
-        setToken(response.token); // Set the token in the AuthContext
+        setToken(response.token);
         setSuccessMessage("Login successful!");
         setErrorMessage("");
-        navigate("/"); // Redirect to the home page
+        navigate("/");
       } else {
         setErrorMessage("Invalid phone number or PIN. Please try again.");
         setSuccessMessage("");
@@ -47,29 +47,33 @@ const Login = () => {
   return (
     <div className="container">
       <div className="form-box">
-        <h2>Personnel Login</h2>
+        <img src="/anmo.png" alt="Logo" className="logo" />
+        <h2 className="auth-title">Login Into Your Account</h2>
         <form onSubmit={handleLogin}>
           <div className="input-container">
-            <label>Phone Number:</label>
             <input
               type="text"
+              placeholder="Phone Number"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               required
-              disabled={isLoading} // Disable inputs while loading
+              disabled={isLoading}
             />
           </div>
           <div className="input-container">
-            <label>PIN:</label>
             <input
               type="password"
+              placeholder="PIN"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               required
-              disabled={isLoading} // Disable inputs while loading
+              disabled={isLoading}
             />
           </div>
-          <button type="submit" disabled={isLoading}>
+          <div className="forgot-password">
+            <a className="forgot-pin" href="/forgot-password">Forgot PIN?</a>
+          </div>
+          <button className="auth-button" type="submit" disabled={isLoading}>
             {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
