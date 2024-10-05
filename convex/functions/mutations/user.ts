@@ -15,7 +15,7 @@ function simpleHash(input: string): string {
 }
 
 export const signUp = mutation(
-  async (ctx, { username, email, password, role, phoneNumber, pin, organizationId }: any) => {
+  async (ctx, { username, email, password, role, phoneNumber, pin }: any) => {
     try {
       const existingUser = await ctx.db
         .query("user")
@@ -43,12 +43,12 @@ export const signUp = mutation(
         role: role as "admin" | "personnel" | "visitor",
         phoneNumber: phoneNumber as string,
         pin: hashedPin,
-        organizationId: organizationId,
       });
 
       return {
         userId,
         message: "Sign-up successful",
+        hashedPin,
       };
     } catch (error: any) {
       throw new Error("Sign-up failed: " + error.message);
@@ -57,7 +57,7 @@ export const signUp = mutation(
 );
 
 export const signUpPersonnel = mutation(
-  async (ctx, { username, role, phoneNumber, pin }: any) => {
+  async (ctx, { username, role, phoneNumber, pin, organizationId }: any) => {
     try {
       const existingUser = await ctx.db
         .query("user")
@@ -77,6 +77,7 @@ export const signUpPersonnel = mutation(
         role: role as "admin" | "personnel" | "visitor",
         phoneNumber: phoneNumber as string,
         pin: hashedPin,
+        organizationId: organizationId,
       });
 
       return {

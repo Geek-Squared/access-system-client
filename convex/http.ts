@@ -508,7 +508,7 @@ http.route({
   method: "GET",
   handler: httpAction(async (ctx, request) => {
     const url = new URL(request.url);
-    const userId = url.searchParams.get("id"); // Extract user ID from the query parameter
+    const userId = url.searchParams.get("id");
 
     if (!userId) {
       return new Response("User ID is required", { status: 400 });

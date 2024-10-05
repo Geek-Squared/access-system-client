@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 
 export const getForCurrentUser = query({
-  args: { id: v.id("user") }, // Ensure the type of `id` is correct (v.id ensures it's a valid id type)
+  args: { id: v.id("user") },
   handler: async (ctx, { id }) => {
     const user = await ctx.db
       .query("user")
@@ -13,5 +13,5 @@ export const getForCurrentUser = query({
 });
 
 export const get = query(async ({ db }) => {
-  return await db.query("user").collect(); // Retrieves all users
+  return await db.query("user").collect();
 });
