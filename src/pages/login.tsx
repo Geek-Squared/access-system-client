@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./styles.scss";
 import useLogin from "../hooks/useLogin";
+import { useAuth } from "../context/authContext";
+import "./styles.scss";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,8 +13,8 @@ const Login = () => {
   const [loginAttempted, setLoginAttempted] = useState(false); // Track login attempts
 
   const { login, isLoading, isError } = useLogin();
+  const { setToken } = useAuth();
 
-  // Only update the error message if a login has been attempted
   useEffect(() => {
     if (isError && loginAttempted) {
       setErrorMessage("An error occurred. Please try again.");
@@ -28,6 +29,7 @@ const Login = () => {
       const response = await login(phoneNumber, pin);
 
       if (response.token) {
+        setToken(response.token); // Set the token in the AuthContext
         setSuccessMessage("Login successful!");
         setErrorMessage("");
         navigate("/"); // Redirect to the home page

@@ -10,6 +10,7 @@ import "./styles.scss";
 // import updateQRCode from "../utils/updateQRCode";
 import { api } from "../../convex/_generated/api";
 import useFetchCurrentUser from "../hooks/useFetchCurrentUser";
+import useFetchOrganization from "../hooks/useFetchOrg";
 
 const TextRecognition = () => {
   const createGuest = useMutation(api.functions.mutations.visitor.addVisitor);
@@ -18,7 +19,9 @@ const TextRecognition = () => {
   const siteId = fetchSite?.find(
     (site: any) => site.personnel[0] === currentUser
   );
+  const { organizations } = useFetchOrganization(currentUser);
 
+  console.log("organizations11", organizations);
   const [step, setStep] = useState<number>(1);
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [_, setDetectedText] = useState<string | null>(null);
@@ -87,7 +90,7 @@ const TextRecognition = () => {
 
     console.warn("Unable to extract full name from text:", text);
   };
-
+  console.log("currentUser", currentUser);
   const handleProcessImage = () => {
     setIsLoading(true);
     setStep(3);

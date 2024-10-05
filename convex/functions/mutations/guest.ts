@@ -3,8 +3,8 @@ import { v } from "convex/values";
 
 export const createVisitor = mutation({
   args: v.object({
-    organizationId: v.optional(v.string()),
-    siteId: v.optional(v.string()),
+    organizationId: v.optional(v.id("organization")),
+    siteId: v.optional(v.id("site")),
     name: v.string(),
     id_number: v.string(),
     visiting_reason: v.string(),

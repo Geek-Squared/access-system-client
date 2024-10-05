@@ -15,7 +15,6 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as auth from "../auth.js";
 import type * as functions_mutations_authenticateAdmin from "../functions/mutations/authenticateAdmin.js";
 import type * as functions_mutations_authenticatePersonnel from "../functions/mutations/authenticatePersonnel.js";
 import type * as functions_mutations_guest from "../functions/mutations/guest.js";
@@ -25,6 +24,7 @@ import type * as functions_mutations_site from "../functions/mutations/site.js";
 import type * as functions_mutations_user from "../functions/mutations/user.js";
 import type * as functions_mutations_visitor from "../functions/mutations/visitor.js";
 import type * as http from "../http.js";
+import type * as invalid from "../invalid.js";
 import type * as organization from "../organization.js";
 import type * as personnel from "../personnel.js";
 import type * as schemas_organizationSchema from "../schemas/organizationSchema.js";
@@ -49,7 +49,6 @@ import type * as visitor from "../visitor.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  auth: typeof auth;
   "functions/mutations/authenticateAdmin": typeof functions_mutations_authenticateAdmin;
   "functions/mutations/authenticatePersonnel": typeof functions_mutations_authenticatePersonnel;
   "functions/mutations/guest": typeof functions_mutations_guest;
@@ -59,6 +58,7 @@ declare const fullApi: ApiFromModules<{
   "functions/mutations/user": typeof functions_mutations_user;
   "functions/mutations/visitor": typeof functions_mutations_visitor;
   http: typeof http;
+  invalid: typeof invalid;
   organization: typeof organization;
   personnel: typeof personnel;
   "schemas/organizationSchema": typeof schemas_organizationSchema;
