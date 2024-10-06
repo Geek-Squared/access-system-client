@@ -1,8 +1,8 @@
 import React from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import "./styles.scss";
 import useFetchCurrentUser from "../../hooks/useFetchCurrentUser";
+import "./styles.scss";
 
 interface ICardListProps {
   handleLogout: (id: string) => void;
@@ -11,13 +11,11 @@ interface ICardListProps {
 const CardList: React.FC<ICardListProps> = ({ handleLogout }) => {
   const fetchGuests = useQuery(api.visitor.get);
   const { currentUser } = useFetchCurrentUser();
-  console.log("fetchGuests", fetchGuests);
-  console.log("currentUser", currentUser);
+
   const filteredVisitor = fetchGuests?.filter(
     (visitor: any) => visitor.security_personnel === currentUser
   );
 
-  console.log("filteredVisitor", filteredVisitor);
   return (
     <div className="card-list">
       {filteredVisitor?.map((user) => (

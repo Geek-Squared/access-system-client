@@ -26,6 +26,7 @@ function useFetchCurrentUser() {
   );
 
   return {
+    user: data,
     currentUser: data?._id,
     loading: isLoading,
     error,

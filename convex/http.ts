@@ -24,7 +24,7 @@ const http = httpRouter();
 
 const handleCorsOptions = (request: Request) => {
   const clientOrigin =
-    process.env.CLIENT_ORIGIN || "https://accessme-admin.vercel.app";
+    process.env.CLIENT_ORIGIN || " http://localhost";
 
   if (
     request.headers.get("Origin") &&

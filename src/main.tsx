@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute copy";
 import { AuthProvider } from "./context/authContext";
 import Login from "./pages/login";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
+import Profile from "./pages/profile";
 
 const Layout = () => {
   const location = useLocation();
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <ProtectedRoute element={<p>profile page</p>} />,
+        element: <ProtectedRoute element={<Profile />} />,
       },
 
       {
