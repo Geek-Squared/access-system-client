@@ -106,3 +106,23 @@
   border-radius: 12px;
   background-color: #3f3d56;
 }
+
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  text-align: center;
+}
+
+.no-data-svg {
+  width: 150px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.no-data-text {
+  font-size: 1.2rem;
+  color: #555;
+}

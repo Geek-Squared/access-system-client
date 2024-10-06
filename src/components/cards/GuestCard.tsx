@@ -16,6 +16,16 @@ const CardList: React.FC<ICardListProps> = ({ handleLogout }) => {
     (visitor: any) => visitor.security_personnel === currentUser
   );
 
+  // Render the placeholder SVG if no visitors found
+  if (!filteredVisitor || filteredVisitor.length === 0) {
+    return (
+      <div className="no-data-container">
+        <img src="/novisitors.svg" alt="No visitors" className="no-data-svg" />
+        <p className="no-data-text">No visitors</p>
+      </div>
+    );
+  }
+
   return (
     <div className="card-list">
       {filteredVisitor?.map((user) => (
