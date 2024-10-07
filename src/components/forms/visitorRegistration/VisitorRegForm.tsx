@@ -1,3 +1,5 @@
+// File: components/forms/visitorRegistration/VisitorRegForm.tsx
+
 import { FC } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./styles.scss";
@@ -10,20 +12,31 @@ type Inputs = {
   entry_time: string;
   exit_time: string;
   phoneNumber: string;
+  license_reg_number: string; // New field for license registration number
+  vehicle_make: string; // New field for vehicle make
+  expiry_date: any; // New field for license disk expiry date
 };
 
 interface IVisitorRegProp {
   name: string;
   id_number: string;
+  license_reg_number: any;
+  vehicle_make: any;
+  expiry_date: string;
   entry_time: string;
   onSubmitOp: (data: Inputs) => void;
+  isSubmitting: boolean;
 }
 
 const VisitorRegForm: FC<IVisitorRegProp> = ({
   name,
   id_number,
+  license_reg_number,
+  vehicle_make,
+  expiry_date,
   entry_time,
   onSubmitOp,
+  isSubmitting,
 }) => {
   const {
     register,
@@ -71,6 +84,35 @@ const VisitorRegForm: FC<IVisitorRegProp> = ({
         placeholder="Phone Number"
         {...register("phoneNumber", { required: true })}
       />
+      {errors.phoneNumber && (
+        <span className="error">Phone number is required</span>
+      )}
+
+      <label className="label" htmlFor="license_reg_number">
+        License Registration Number
+      </label>
+      <input
+        className="form-input"
+        defaultValue={license_reg_number}
+        placeholder="License Registration Number"
+        {...register("license_reg_number", { required: true })}
+      />
+      {errors.license_reg_number && (
+        <span className="error">License registration number is required</span>
+      )}
+
+      <label className="label" htmlFor="vehicle_make">
+        Vehicle Make
+      </label>
+      <input
+        className="form-input"
+        defaultValue={vehicle_make}
+        placeholder="Vehicle Make"
+        {...register("vehicle_make", { required: true })}
+      />
+      {errors.vehicle_make && (
+        <span className="error">Vehicle make is required</span>
+      )}
 
       <label className="label" htmlFor="visiting_reason">
         Visiting Reason
@@ -104,11 +146,10 @@ const VisitorRegForm: FC<IVisitorRegProp> = ({
       <input
         className="form-input"
         type="datetime-local"
-        defaultValue={entry_time} // Use the entry_time prop as the default value
+        defaultValue={entry_time}
         placeholder="Entry Time"
         {...register("entry_time", { required: true })}
       />
-
       {errors.entry_time && (
         <span className="error">Entry time is required</span>
       )}
@@ -124,7 +165,12 @@ const VisitorRegForm: FC<IVisitorRegProp> = ({
       />
       {errors.exit_time && <span className="error">Exit time is required</span>} */}
 
-      <input className="submit-button" type="submit" value="Submit" />
+      <input
+        className="submit-button"
+        type="submit"
+        value={isSubmitting ? "Submitting..." : "Submit"}
+        disabled={isSubmitting}
+      />
     </form>
   );
 };
