@@ -12,9 +12,8 @@ type Inputs = {
   entry_time: string;
   exit_time: string;
   phoneNumber: string;
-  license_reg_number: string; // New field for license registration number
-  vehicle_make: string; // New field for vehicle make
-  expiry_date: any; // New field for license disk expiry date
+  license_reg_number: string;
+  vehicle_make: string;
 };
 
 interface IVisitorRegProp {
@@ -22,7 +21,6 @@ interface IVisitorRegProp {
   id_number: string;
   license_reg_number: any;
   vehicle_make: any;
-  expiry_date: string;
   entry_time: string;
   onSubmitOp: (data: Inputs) => void;
   isSubmitting: boolean;
@@ -33,7 +31,6 @@ const VisitorRegForm: FC<IVisitorRegProp> = ({
   id_number,
   license_reg_number,
   vehicle_make,
-  expiry_date,
   entry_time,
   onSubmitOp,
   isSubmitting,

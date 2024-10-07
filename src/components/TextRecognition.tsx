@@ -106,6 +106,8 @@ const TextRecognition = () => {
     }
   };
 
+  console.log("expiryMatch", expiryDate);
+
   const handleProcessImage = () => {
     setIsLoading(true);
     const stepHandler =
@@ -139,8 +141,8 @@ const TextRecognition = () => {
         entry_time: data.entry_time,
         exit_time: data.exit_time,
       });
-      console.log("Submitted successfully", result);
       setStep(6);
+      console.log(result);
     } catch (error) {
       console.error(`Error is ${error}`);
     } finally {
@@ -156,6 +158,8 @@ const TextRecognition = () => {
     }
   }, [step, navigate]);
 
+  console.log("detectedText", detectedText);
+
   return (
     <div className="text-recog-container">
       {step === 0 && (
@@ -167,7 +171,10 @@ const TextRecognition = () => {
 
       {step === 1 && (
         <div>
-          <CameraCapture onCapture={handleImageCapture} />
+          <CameraCapture
+            title="Identification"
+            onCapture={handleImageCapture}
+          />
         </div>
       )}
 
@@ -183,7 +190,10 @@ const TextRecognition = () => {
 
       {step === 3 && (
         <div>
-          <CameraCapture onCapture={handleImageCapture} />
+          <CameraCapture
+            title="Car Registration"
+            onCapture={handleImageCapture}
+          />
         </div>
       )}
 
@@ -209,8 +219,6 @@ const TextRecognition = () => {
           id_number={idNumber}
           license_reg_number={licenseRegNumber}
           vehicle_make={vehicleMake}
-          //@ts-expect-error - to fix this
-          expiry_date={expiryDate}
           entry_time={getCurrentDateTime()}
           onSubmitOp={handleFormSubmit}
           isSubmitting={isSubmitting}

@@ -4,9 +4,10 @@ import "./styles.scss";
 
 interface ICameraCaptureProps {
   onCapture: any;
+  title?: string;
 }
 
-const CameraCapture: FC<ICameraCaptureProps> = ({ onCapture }) => {
+const CameraCapture: FC<ICameraCaptureProps> = ({ onCapture, title }) => {
   const [photo, setPhoto] = useState(null);
 
   // Function to capture photo
@@ -27,7 +28,7 @@ const CameraCapture: FC<ICameraCaptureProps> = ({ onCapture }) => {
   };
   return (
     <div style={{ textAlign: "center" }}>
-      <h4>Scan ID</h4>
+      <h4>Scan {title}</h4>
 
       <button className="snap-button" onClick={takePhoto}>
         Take Photo
