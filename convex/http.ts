@@ -54,7 +54,7 @@ const handleCorsOptions = (request: Request) => {
 };
 
 const clientOrigin =
-  process.env.CLIENT_ORIGIN || "https://app-admin-git-main-moses-projects-a42870f9.vercel.app/";
+  process.env.CLIENT_ORIGIN || "https://app-admin-git-main-moses-projects-a42870f9.vercel.app/" || "https://admin-access-khaki.vercel.app/";
 
 const validateRequiredFields = (data: any, fields: string[]) => {
   for (const field of fields) {
