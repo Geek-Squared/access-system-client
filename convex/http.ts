@@ -26,6 +26,7 @@ const http = httpRouter();
 const handleCorsOptions = (request: Request) => {
   const clientOrigin =
     process.env.CLIENT_ORIGIN ||
+    "https://accessme-admin.vercel.app" ||
     "https://app-admin-git-main-moses-projects-a42870f9.vercel.app" ||
     "https://admin-access-khaki.vercel.app";
 
