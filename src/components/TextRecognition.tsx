@@ -25,8 +25,8 @@ const TextRecognition = () => {
   const navigate = useNavigate();
   const [licenseRegNumber, setLicenseRegNumber] = useState<string | null>(null);
   const [vehicleMake, setVehicleMake] = useState<string | null>(null);
-  const [expiryDate, setExpiryDate] = useState<string | null>(null);
-  const [detectedText, setDetectedText] = useState<string | null>(null);
+  const [_, setExpiryDate] = useState<string | null>(null);
+  const [__, setDetectedText] = useState<string | null>(null);
 
   const getCurrentDateTime = () => {
     const now = new Date();
@@ -43,46 +43,63 @@ const TextRecognition = () => {
     setStep(step + 1);
   };
 
-  const extractInformation = (text: string) => {
-    const idRegex = /\d{2}-\d{6,7}\s\w\s\d{2}/;
-    const concatenatedNameRegex =
-      /SURNAME\s*FIRST NAME\s*DATE OF BIRTH\s*([A-Z\s]+)\d{2}\/\d{2}\/\d{4}/i;
-    const nameAfterCITRegex = /CIT\s?[MF]\s*([A-Z\s]+?)\s+\d{2}\/\d{2}\/\d{4}/i;
-    const separatedNameRegex = /SURNAME\s+([A-Z]+)\s+FIRST NAME\s+([A-Z\s]+)/i;
+  const extractInformationFromLicense = (text: string) => {
+    // List of unwanted keywords to filter out from the detected text
+    const unwantedKeywords = [
+      "Signature",
+      "Special Condition",
+      "Com",
+      "Nice",
+      "Regin",
+      "Car",
+      "Bark",
+      "Road Traffic",
+      "Chapter",
+      "Ced",
+      "Many",
+      "Condition",
+      "of",
+      "Zimbabwe",
+      "Drivers",
+      "Licence",
+    ];
 
-    const idMatch = text.match(idRegex);
+    // Step 1: Filter out unwanted keywords from the detected text
+    let cleanedText = text;
+    unwantedKeywords.forEach((word) => {
+      const regex = new RegExp(`\\b${word}\\b`, "gi");
+      cleanedText = cleanedText.replace(regex, "");
+    });
+
+    // Step 2: Regex to match a full name, assuming it can be in the form of:
+    // - FirstName MiddleName Surname
+    // - Surname FirstName MiddleName
+    const nameRegex = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\b/g;
+
+    // Step 3: Regex to match ID numbers with alphanumeric characters and digits
+    const idNumberRegex =
+      /\b(\d{2,}-\d{5,}|\d+[A-Z]+\s+\d+-\d+|\d+-\d+\s\d+|\d+[A-Z]+\d+)\b/;
+
+    const nameMatches = cleanedText.match(nameRegex);
+    const idMatch = cleanedText.match(idNumberRegex);
+
+    // If names are found, determine the correct order (First name followed by surname)
+    if (nameMatches && nameMatches.length >= 1) {
+      // Assuming the last matched name part is the surname, reorder accordingly
+      const orderedName = nameMatches.join(" ").split(/\s+/);
+      const surname = orderedName.pop(); // Assuming the last word is the surname
+      const fullName = `${surname} ${orderedName.join(" ")}`;
+      setFullName(fullName.trim());
+    } else {
+      console.warn("Unable to extract full name from text:", text);
+    }
+
+    // If we found an ID number match
     if (idMatch) {
       setIdNumber(idMatch[0]);
+    } else {
+      console.warn("Unable to extract ID number from text:", text);
     }
-
-    const concatenatedNameMatch = text.match(concatenatedNameRegex);
-    if (concatenatedNameMatch) {
-      const names = concatenatedNameMatch[1].trim();
-      const nameParts = names.split(/\s+/);
-      if (nameParts.length >= 2) {
-        const surname = nameParts[0];
-        const firstName = nameParts.slice(1).join(" ");
-        setFullName(`${surname} ${firstName}`);
-        return;
-      }
-    }
-
-    const nameAfterCITMatch = text.match(nameAfterCITRegex);
-    if (nameAfterCITMatch) {
-      const fullNameExtracted = nameAfterCITMatch[1].trim();
-      setFullName(fullNameExtracted);
-      return;
-    }
-
-    const separatedNameMatch = text.match(separatedNameRegex);
-    if (separatedNameMatch) {
-      const surname = separatedNameMatch[1].trim();
-      const firstName = separatedNameMatch[2].trim();
-      setFullName(`${firstName} ${surname}`);
-      return;
-    }
-
-    console.warn("Unable to extract full name from text:", text);
   };
 
   const extractLicenseDiskInfo = (text: string) => {
@@ -106,16 +123,14 @@ const TextRecognition = () => {
     }
   };
 
-  console.log("expiryMatch", expiryDate);
-
   const handleProcessImage = () => {
     setIsLoading(true);
     const stepHandler =
-      step === 2 ? extractInformation : extractLicenseDiskInfo;
+      step === 2 ? extractInformationFromLicense : extractLicenseDiskInfo;
     analyzeImage(selectedImage, setDetectedText, stepHandler)
       .then(() => {
         setIsLoading(false);
-        setStep(step + 1); // Move to the next step based on current state
+        setStep(step + 1);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -128,7 +143,7 @@ const TextRecognition = () => {
     try {
       const result = await createGuest({
         security_personnel: currentUser,
-        //@ts-expect-error - to fix this
+        //@ts-expect-error
         siteId: siteId?._id,
         name: data.name,
         id_number: data.id_number,
@@ -157,8 +172,6 @@ const TextRecognition = () => {
       }, 3000);
     }
   }, [step, navigate]);
-
-  console.log("detectedText", detectedText);
 
   return (
     <div className="text-recog-container">
@@ -213,9 +226,9 @@ const TextRecognition = () => {
 
       {step === 5 && (
         <VisitorRegForm
-          //@ts-expect-error - to fix this
+          //@ts-expect-error
           name={fullName}
-          //@ts-expect-error - to fix this
+          //@ts-expect-error
           id_number={idNumber}
           license_reg_number={licenseRegNumber}
           vehicle_make={vehicleMake}

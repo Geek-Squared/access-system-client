@@ -25,7 +25,9 @@ if (typeof global !== "undefined") {
 const http = httpRouter();
 
 const handleCorsOptions = (request: Request) => {
-  const clientOrigin = process.env.CLIENT_ORIGIN || " http://localhost";
+  const clientOrigin = process.env.CLIENT_ORIGIN || 
+    "https://app-admin-git-main-moses-projects-a42870f9.vercel.app" || 
+    "https://admin-access-khaki.vercel.app";
 
   if (
     request.headers.get("Origin") &&
@@ -35,10 +37,10 @@ const handleCorsOptions = (request: Request) => {
     return new Response(null, {
       headers: {
         "Access-Control-Allow-Origin": clientOrigin,
-        "Access-Control-Allow-Methods":
-          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Max-Age": "86400",
+        Vary: "Origin",  // Ensure browser caches responses based on the origin
       },
       status: 204,
     });
@@ -49,10 +51,12 @@ const handleCorsOptions = (request: Request) => {
       "Access-Control-Allow-Origin": clientOrigin,
       "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      Vary: "Origin",
     },
     status: 400,
   });
 };
+
 
 const clientOrigin =
   process.env.CLIENT_ORIGIN ||
@@ -633,7 +637,7 @@ http.route({
 http.route({
   path: "/invite-user",
   method: "POST",
-  handler: httpAction(async (ctx, request) => {
+  handler: httpAction(async (_, request) => {
     const data = await request.json();
     const requiredFields = ["email", "username"];
 
