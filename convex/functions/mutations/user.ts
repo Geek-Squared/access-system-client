@@ -1,6 +1,5 @@
 import { mutation } from "../../_generated/server";
 import { SignJWT } from "jose";
-import sgMail from "@sendgrid/mail";
 import { userSchema } from "../../schemas/userSchema";
 import { v } from "convex/values";
 
@@ -14,27 +13,6 @@ function simpleHash(input: string): string {
   }
   return hash.toString();
 }
-
-
-export const sendInvitationEmail = async (
-  email: string,
-  username: string,
-  token: string
-) => {
-  const msg = {
-    to: email,
-    from: "msngwelz@gmail.com",
-    subject: "Invitation to Join",
-    text: `Hello ${username},\n\nYou have been invited to join. Please use the following token to complete your registration: ${token}\n\nBest regards,\nYour Team`,
-  };
-
-  try {
-    await sgMail.send(msg);
-    console.log("Invitation email sent successfully");
-  } catch (error) {
-    console.error("Error sending invitation email:", error);
-  }
-};
 
 export const signUp = mutation(
   async (ctx, { username, email, password, role, phoneNumber, pin }: any) => {

@@ -4,7 +4,6 @@ import { api } from "./_generated/api";
 import util from "util";
 import { Buffer } from "buffer";
 import { SignJWT } from "jose";
-import { sendInvitationEmail } from "./functions/mutations/user";
 
 if (typeof global !== "undefined") {
   global.Buffer = Buffer;
@@ -25,8 +24,9 @@ if (typeof global !== "undefined") {
 const http = httpRouter();
 
 const handleCorsOptions = (request: Request) => {
-  const clientOrigin = process.env.CLIENT_ORIGIN || 
-    "https://app-admin-git-main-moses-projects-a42870f9.vercel.app" || 
+  const clientOrigin =
+    process.env.CLIENT_ORIGIN ||
+    "https://app-admin-git-main-moses-projects-a42870f9.vercel.app" ||
     "https://admin-access-khaki.vercel.app";
 
   if (
@@ -37,10 +37,11 @@ const handleCorsOptions = (request: Request) => {
     return new Response(null, {
       headers: {
         "Access-Control-Allow-Origin": clientOrigin,
-        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Max-Age": "86400",
-        Vary: "Origin",  // Ensure browser caches responses based on the origin
+        Vary: "Origin", // Ensure browser caches responses based on the origin
       },
       status: 204,
     });
@@ -56,7 +57,6 @@ const handleCorsOptions = (request: Request) => {
     status: 400,
   });
 };
-
 
 const clientOrigin =
   process.env.CLIENT_ORIGIN ||
@@ -651,9 +651,7 @@ http.route({
         .setIssuedAt()
         .setExpirationTime("2h")
         .sign(new TextEncoder().encode("key"));
-
-      await sendInvitationEmail(data.email, data.username, token);
-
+      console.log(token);
       return new Response(
         JSON.stringify({
           message: `Invitation sent to ${data.email}`,
