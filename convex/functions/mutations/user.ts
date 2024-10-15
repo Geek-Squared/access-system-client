@@ -16,7 +16,7 @@ function simpleHash(input: string): string {
 }
 
 sgMail.setApiKey(
-  "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"
+  process.env.TZ_SENDGRID_API_KEY || ""
 );
 
 export const sendInvitationEmail = async (
