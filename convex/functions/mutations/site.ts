@@ -50,3 +50,19 @@ export const updateSite = mutation(
     }
   }
 );
+
+export const deleteSite = mutation(
+  async (ctx, { id }: any) => {
+    try {
+      const site = await ctx.db.get(id);
+      if (!site) {
+        throw new Error("Site not found");
+      }
+
+      await ctx.db.delete(id);
+      return { message: "Site deleted successfully" };
+    } catch (error: any) {
+      throw new Error("Delete failed: " + error.message);
+    }
+  }
+)

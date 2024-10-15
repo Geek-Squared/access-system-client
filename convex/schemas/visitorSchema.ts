@@ -13,4 +13,6 @@ export const visitorSchema = {
   entry_time: v.optional(v.string()),
   exit_time: v.optional(v.string()),
   on_site: v.boolean(),
+
+  customFields: v.optional(v.record(v.string(), v.any())),
 };

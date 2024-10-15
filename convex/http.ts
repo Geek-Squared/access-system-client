@@ -3,6 +3,8 @@ import { httpAction } from "./_generated/server";
 import { api } from "./_generated/api";
 import util from "util";
 import { Buffer } from "buffer";
+import { SignJWT } from "jose";
+import { sendInvitationEmail } from "./functions/mutations/user";
 
 if (typeof global !== "undefined") {
   global.Buffer = Buffer;
@@ -393,7 +395,7 @@ http.route({
 });
 
 http.route({
-  path: "/site",
+  path: "/site/:siteId",
   method: "PATCH",
   handler: httpAction(async (ctx, request) => {
     const url = new URL(request.url);
@@ -441,7 +443,52 @@ http.route({
 });
 
 http.route({
+  path: "/site/:siteId",
+  method: "DELETE",
+  handler: httpAction(async (ctx, request) => {
+    const url = new URL(request.url);
+    const siteId = url.searchParams.get("id");
+
+    if (!siteId) {
+      return new Response("Site ID is required", { status: 400 });
+    }
+
+    try {
+      //@ts-ignore
+      const site = await ctx.runQuery(api.site.get, { id: siteId });
+
+      if (!site) {
+        return new Response("Site not found", { status: 404 });
+      }
+
+      await ctx.runMutation(api.functions.mutations.site.deleteSite, {
+        id: siteId,
+      });
+
+      return new Response(
+        JSON.stringify({ message: "Site deleted successfully" }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": clientOrigin,
+          },
+        }
+      );
+    } catch (error: any) {
+      return new Response(error.message, { status: 500 });
+    }
+  }),
+});
+
+http.route({
   path: "/site",
+  method: "OPTIONS",
+  handler: httpAction(async (_, request) => handleCorsOptions(request)),
+});
+
+http.route({
+  path: "/site/:siteId",
   method: "OPTIONS",
   handler: httpAction(async (_, request) => handleCorsOptions(request)),
 });
@@ -579,6 +626,51 @@ http.route({
 
 http.route({
   path: "/user",
+  method: "OPTIONS",
+  handler: httpAction(async (_, request) => handleCorsOptions(request)),
+});
+
+http.route({
+  path: "/invite-user",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const data = await request.json();
+    const requiredFields = ["email", "username"];
+
+    if (!validateRequiredFields(data, requiredFields)) {
+      return new Response("Missing required fields", { status: 400 });
+    }
+
+    try {
+      const token = await new SignJWT({ email: data.email })
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime("2h")
+        .sign(new TextEncoder().encode("key"));
+
+      await sendInvitationEmail(data.email, data.username, token);
+
+      return new Response(
+        JSON.stringify({
+          message: `Invitation sent to ${data.email}`,
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": clientOrigin,
+            Vary: "origin",
+          },
+        }
+      );
+    } catch (error: any) {
+      return new Response(error.message, { status: 500 });
+    }
+  }),
+});
+
+http.route({
+  path: "/invite-user",
   method: "OPTIONS",
   handler: httpAction(async (_, request) => handleCorsOptions(request)),
 });
