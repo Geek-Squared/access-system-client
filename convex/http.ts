@@ -22,27 +22,18 @@ if (typeof global !== "undefined") {
 }
 
 const http = httpRouter();
-
 const handleCorsOptions = (request: Request) => {
-  const clientOrigin =
-    process.env.CLIENT_ORIGIN ||
-    "https://accessme-admin.vercel.app" ||
-    "https://app-admin-git-main-moses-projects-a42870f9.vercel.app" ||
-    "https://admin-access-khaki.vercel.app";
+  const origin = request.headers.get("Origin") || "";
 
-  if (
-    request.headers.get("Origin") &&
-    request.headers.get("Access-Control-Request-Method") &&
-    request.headers.get("Access-Control-Request-Headers")
-  ) {
+  if (origin && request.method === "OPTIONS") {
     return new Response(null, {
       headers: {
-        "Access-Control-Allow-Origin": clientOrigin,
-        "Access-Control-Allow-Methods":
-          "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Origin": origin,
+        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Credentials": "true",
         "Access-Control-Max-Age": "86400",
-        Vary: "Origin", // Ensure browser caches responses based on the origin
+        Vary: "Origin", // Ensures responses vary based on the requesting origin
       },
       status: 204,
     });
@@ -50,7 +41,7 @@ const handleCorsOptions = (request: Request) => {
 
   return new Response(null, {
     headers: {
-      "Access-Control-Allow-Origin": clientOrigin,
+      "Access-Control-Allow-Origin": origin,
       "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
       Vary: "Origin",
@@ -58,6 +49,14 @@ const handleCorsOptions = (request: Request) => {
     status: 400,
   });
 };
+
+// Replace all explicit headers with dynamic CORS in every route response
+const dynamicCORSHeaders = (request: Request) => ({
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": request.headers.get("Origin") || "*",
+  "Access-Control-Allow-Credentials": "true",
+  Vary: "Origin",
+});
 
 const clientOrigin =
   process.env.CLIENT_ORIGIN ||
