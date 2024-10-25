@@ -50,13 +50,6 @@ const handleCorsOptions = (request: Request) => {
   });
 };
 
-// Replace all explicit headers with dynamic CORS in every route response
-const dynamicCORSHeaders = (request: Request) => ({
-  "Content-Type": "application/json",
-  "Access-Control-Allow-Origin": request.headers.get("Origin") || "*",
-  "Access-Control-Allow-Credentials": "true",
-  Vary: "Origin",
-});
 
 const clientOrigin =
   process.env.CLIENT_ORIGIN ||
