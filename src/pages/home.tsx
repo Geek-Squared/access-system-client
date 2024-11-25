@@ -1,8 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import NavCard from "../components/cards/NavCard";
+import useFetchCurrentUser from "../hooks/useFetchCurrentUser";
+import useOrgStyles from "../hooks/useOrgStyles";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { user } = useFetchCurrentUser();
+  useOrgStyles();
 
   return (
     <>

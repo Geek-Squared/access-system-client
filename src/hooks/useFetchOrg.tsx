@@ -1,22 +1,33 @@
 import useSWR from "swr";
+import { apiUrl } from "../utils/apiUrl";
 
-function useFetchOrganization(personnelId: string) {
-    //@ts-expect-error
-  const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json());
+const fetcher = (...args: [RequestInfo, RequestInit?]) => {
+  const token = localStorage.getItem("token");
 
-  const { data, error, isLoading } = useSWR(
-    "https://different-armadillo-940.convex.site/organization",
-    fetcher
-  );
-console.log('data', data)
-  const filteredOrganizations = data?.filter((org: any) =>
-    org.personnel.includes(personnelId)
-  );
-console.log('filteredOrganizations', filteredOrganizations)
+  const options = {
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  };
+
+  return fetch(args[0], { ...options, ...args[1] }).then((res) => {
+    if (!res.ok) throw new Error("Network response was not ok");
+    return res.json();
+  });
+};
+
+function useFetchOrganization() {
+  const { data, error, isLoading } = useSWR(`${apiUrl}/organization`, fetcher, {
+    revalidateOnFocus: false,
+    dedupingInterval: 60000,
+  });
+
+  console.log('data', data)
   return {
-    organizations: filteredOrganizations,
+    org: data,
     isLoading,
-    isError: error,
+    isError: !!error,
   };
 }
 

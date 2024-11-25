@@ -3,17 +3,18 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import useFetchCurrentUser from "../../hooks/useFetchCurrentUser";
 import "./styles.scss";
+import useFetchVisitors from "../../hooks/useFetchVisitor";
 
 interface ICardListProps {
   handleLogout: (id: string) => void;
 }
 
 const CardList: React.FC<ICardListProps> = ({ handleLogout }) => {
-  const fetchGuests = useQuery(api.visitor.get);
-  const { currentUser } = useFetchCurrentUser();
+  const { visitors } = useFetchVisitors();
+  const { user } = useFetchCurrentUser();
 
-  const filteredVisitor = fetchGuests?.filter(
-    (visitor: any) => visitor.security_personnel === currentUser
+  const filteredVisitor = visitors?.filter(
+    (visitor: any) => visitor.userId === user.id
   );
 
   // Render the placeholder SVG if no visitors found
@@ -28,13 +29,13 @@ const CardList: React.FC<ICardListProps> = ({ handleLogout }) => {
 
   return (
     <div className="card-list">
-      {filteredVisitor?.map((user) => (
+      {filteredVisitor?.map((visitor: any) => (
         <CardItem
           handleLogOut={handleLogout}
-          key={user._id}
-          id={user._id}
-          name={user.name}
-          on_site={user.on_site}
+          key={visitor?.id}
+          id={visitor?.id}
+          name={visitor?.name}
+          on_site={visitor?.onSite}
         />
       ))}
     </div>

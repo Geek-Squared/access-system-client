@@ -1,17 +1,12 @@
-
-
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useLogin from "../hooks/useLogin";
 import { useAuth } from "../context/authContext";
 import "./styles.scss";
 
-
 const Loader = () => {
   return <div className="loader"></div>;
 };
-
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,7 +15,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loginAttempted, setLoginAttempted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // New state for handling form submission loading
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { login, isError } = useLogin();
   const { setToken } = useAuth();
@@ -84,7 +79,9 @@ const Login = () => {
             />
           </div>
           <div className="forgot-password">
-            <a className="forgot-pin" href="/forgot-password">Forgot PIN?</a>
+            <a className="forgot-pin" href="/forgot-password">
+              Forgot PIN?
+            </a>
           </div>
           <button className="auth-button" type="submit" disabled={isSubmitting}>
             {isSubmitting ? <Loader /> : "Login"}

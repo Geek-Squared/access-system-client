@@ -30,7 +30,7 @@ const CameraCapture: FC<ICameraCaptureProps> = ({ onCapture, title }) => {
     <div style={{ textAlign: "center" }}>
       <h4>Scan {title}</h4>
 
-      <button className="snap-button" onClick={takePhoto}>
+      <button className="snap-button-1" onClick={takePhoto}>
         Take Photo
       </button>
 

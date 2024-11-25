@@ -5,7 +5,6 @@ import "./styles.scss";
 const Profile = () => {
   const { logout } = useAuth();
   const { user } = useFetchCurrentUser();
-  console.log("user", user);
   return (
     <div className="profile-container">
       {/* <div className="profile-pic">

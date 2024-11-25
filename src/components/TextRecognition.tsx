@@ -1,20 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "convex/react";
 import CameraCapture from "./camera/Camera";
 import analyzeImage from "../utils/analyzeImage";
 import VisitorRegForm from "./forms/visitorRegistration/VisitorRegForm";
 import "./styles.scss";
-import { api } from "../../convex/_generated/api";
 import useFetchCurrentUser from "../hooks/useFetchCurrentUser";
+import useCreateVisitor from "../hooks/useCreateVisitor";
 
 const TextRecognition = () => {
-  const createGuest = useMutation(api.functions.mutations.visitor.addVisitor);
-  const { currentUser } = useFetchCurrentUser();
-  const fetchSite = useQuery(api.sites.get);
-  const siteId = fetchSite?.find(
-    (site: any) => site.personnel[0] === currentUser
-  );
+  const { user } = useFetchCurrentUser();
+  const { createVisitor } = useCreateVisitor();
 
   const [step, setStep] = useState<number>(0);
   const [selectedImage, setSelectedImage] = useState<any>(null);
@@ -27,7 +22,7 @@ const TextRecognition = () => {
   const [vehicleMake, setVehicleMake] = useState<string | null>(null);
   const [_, setExpiryDate] = useState<string | null>(null);
   const [__, setDetectedText] = useState<string | null>(null);
-
+  console.log("user", user);
   const getCurrentDateTime = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -140,24 +135,26 @@ const TextRecognition = () => {
 
   const handleFormSubmit = async (data: any) => {
     setIsSubmitting(true);
+    const visitorDataToSubmit = {
+      security_personnel: user,
+      siteId: user?.sitesId,
+      name: data.name,
+      userId: user?.id,
+      idNumber: data.id_number,
+      visitingReason: data.visiting_reason,
+      visiting: data.visiting_resident,
+      vehicleMake: data.vehicle_make,
+      vehiclePlate: data.license_reg_number,
+      onSite: true,
+      phone: data.phoneNumber,
+      entryTime: new Date(data.entry_time).toISOString(),
+      exitTime: data.exit_time
+        ? new Date(data.exit_time).toISOString()
+        : undefined,
+    };
     try {
-      const result = await createGuest({
-        security_personnel: currentUser,
-        //@ts-expect-error
-        siteId: siteId?._id,
-        name: data.name,
-        id_number: data.id_number,
-        visiting_reason: data.visiting_reason,
-        visiting_resident: data.visiting_resident,
-        vehicle_make: data.vehicle_make,
-        license_reg_number: data.license_reg_number,
-        on_site: true,
-        phoneNumber: data.phoneNumber,
-        entry_time: data.entry_time,
-        exit_time: data.exit_time,
-      });
       setStep(6);
-      console.log(result);
+      createVisitor(visitorDataToSubmit);
     } catch (error) {
       console.error(`Error is ${error}`);
     } finally {
@@ -176,10 +173,16 @@ const TextRecognition = () => {
   return (
     <div className="text-recog-container">
       {step === 0 && (
-        <div>
-          <button onClick={() => setStep(1)}>Scan Identification</button>
-          <button onClick={() => setStep(5)}>Enter Manually</button>
+        <div className="option-container">
+        <div className="option-container__actions">
+          <button className="option-container__button" onClick={() => setStep(1)}>
+            Scan Identification
+          </button>
+          <button className="option-container__button" onClick={() => setStep(5)}>
+            Enter Manually
+          </button>
         </div>
+      </div>
       )}
 
       {step === 1 && (

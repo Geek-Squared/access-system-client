@@ -7,16 +7,17 @@ function useLogin() {
   const { data, error, isLoading } = useSWR(null, fetcher, {
     shouldRetryOnError: false,
   });
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const login = async (phoneNumber: string, pin: string) => {
     const response = await mutate(
-      "https://different-armadillo-940.convex.site/auth/personnel",
-      fetcher("https://different-armadillo-940.convex.site/auth/personnel", {
+      `${apiUrl}/auth/signin`,
+      fetcher(`${apiUrl}/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ phoneNumber, pin }),
+        body: JSON.stringify({ phoneNumber, pin, role: "PERSONNEL" }),
       }),
       false
     );

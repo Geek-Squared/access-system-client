@@ -1,3 +1,10 @@
+:root {
+  --primary-color: #000;
+  --secondary-color: #fff;
+  --button-bg-color: var(--primary-color);
+  --button-text-color: var(--secondary-color);
+}
+
 .nav-card-container {
   display: flex;
   flex-direction: column;
@@ -42,10 +49,14 @@
     margin-bottom: 15px;
   }
 
+  .nav-card-icon {
+    color: #000;
+  }
+
   .nav-card-button {
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: #3f3d56;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 5px;
@@ -57,6 +68,7 @@
     }
   }
 }
+
 
 .card-item {
   display: flex;

@@ -1,34 +1,36 @@
-// import { useState } from "react";
-import { useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
 import CardList from "../../cards/GuestCard";
+import { useState } from "react";
+import useFetchVisitors from "../../../hooks/useFetchVisitor";
+import useUpdateVisitor from "../../../hooks/useUpdateVisitor";
 
 const getCurrentDateTime = () => {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(now.getUTCDate()).padStart(2, "0");
+  const hours = String(now.getUTCHours()).padStart(2, "0");
+  const minutes = String(now.getUTCMinutes()).padStart(2, "0");
+  const seconds = String(now.getUTCSeconds()).padStart(2, "0");
+  const milliseconds = String(now.getUTCMilliseconds()).padStart(3, "0");
+
+  // Combine into ISO-8601 format
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
 };
 
 const ScanVisitorsOut = () => {
-  const updateGuest = useMutation(
-    api.functions.mutations.visitor.updateVisitor
-  );
-  // const [__, setBarcodes] = useState<string[]>([]);
-  // const [barcodeId, setBarcodeId] = useState<string | number>("No barcode");
-  // const [message, setMessage] = useState<string | null>(null);
-
+  const [idNumber, setId] = useState<any>();
+  const { data, updateUser } = useUpdateVisitor(idNumber);
+  const { visitors } = useFetchVisitors();
+  console.log("data", data);
   const handleLogOut = async (id: string) => {
+    setId(id);
     try {
-      const result = await updateGuest({
-        id: id,
-        exit_time: getCurrentDateTime(),
-        on_site: false,
-      });
-      console.log("result", result);
+      const result = {
+        id: idNumber,
+        exitTime: getCurrentDateTime(),
+        onSite: false,
+      };
+      updateUser(result);
     } catch (error) {
       console.log("error", error);
     }
