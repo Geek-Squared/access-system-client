@@ -18,6 +18,7 @@ import { AuthProvider } from "./context/authContext";
 import Login from "./pages/login";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import Profile from "./pages/profile";
+import FormDetail from "./components/forms/visitorRegistration/FormDetail";
 
 const Layout = () => {
   const location = useLocation();
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "/scan-out",
         element: <ProtectedRoute element={<ScanVisitorsOut />} />,
+      },
+      {
+        path: "/form/:formId",
+        element: <ProtectedRoute element={<FormDetail />} />,
       },
       {
         path: "/settings",

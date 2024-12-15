@@ -1,6 +1,5 @@
 import CardList from "../../cards/GuestCard";
 import { useState } from "react";
-import useFetchVisitors from "../../../hooks/useFetchVisitor";
 import useUpdateVisitor from "../../../hooks/useUpdateVisitor";
 
 const getCurrentDateTime = () => {
@@ -20,7 +19,6 @@ const getCurrentDateTime = () => {
 const ScanVisitorsOut = () => {
   const [idNumber, setId] = useState<any>();
   const { data, updateUser } = useUpdateVisitor(idNumber);
-  const { visitors } = useFetchVisitors();
   console.log("data", data);
   const handleLogOut = async (id: string) => {
     setId(id);

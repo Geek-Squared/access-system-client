@@ -1,16 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import NavCard from "../components/cards/NavCard";
-import useFetchCurrentUser from "../hooks/useFetchCurrentUser";
 import useOrgStyles from "../hooks/useOrgStyles";
+import FormList from "../components/cards/FormList";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { user } = useFetchCurrentUser();
   useOrgStyles();
 
   return (
     <>
-      <NavCard
+      {/* <NavCard
         heading="Scan Visitors In"
         icon="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
         buttonText="Scan identification"
@@ -23,7 +22,8 @@ const Home = () => {
         buttonText="Continue"
         description=""
         handleClick={() => navigate("/scan-out")}
-      />
+      /> */}
+      <FormList />
     </>
   );
 };
