@@ -1,21 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import useFetchCurrentUser from "../../hooks/useFetchCurrentUser";
-import "./styles.scss";
 import useFetchVisitors from "../../hooks/useFetchVisitor";
+import "./styles.scss";
 
 interface ICardListProps {
-  handleLogout: (id: string) => void;
+  handleLogout: (id: string) => Promise<void>; // Changed to Promise
 }
 
+const getFormattedName = (renderedFields: any): string => {
+  if (renderedFields["Full Name"]) {
+    return renderedFields["Full Name"];
+  }
+
+  if (renderedFields["Name"]) {
+    return renderedFields["Name"];
+  }
+
+  const firstName =
+    renderedFields["First Name"] ||
+    renderedFields["FirstName"] ||
+    renderedFields["Firstname"] ||
+    renderedFields["firstname"];
+
+  const lastName =
+    renderedFields["Last Name"] ||
+    renderedFields["LastName"] ||
+    renderedFields["Lastname"] ||
+    renderedFields["lastname"] ||
+    renderedFields["Surname"] ||
+    renderedFields["surname"];
+
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`;
+  }
+
+  if (firstName) return firstName;
+  if (lastName) return lastName;
+
+  return "Unknown Visitor";
+};
+
 const CardList: React.FC<ICardListProps> = ({ handleLogout }) => {
-  const { visitors } = useFetchVisitors();
+  const { visitors, mutate: mutateVisitors } = useFetchVisitors();
+  const [searchParams] = useSearchParams();
+  const categoryId = Number(searchParams.get("category"));
   const { user } = useFetchCurrentUser();
 
   const filteredVisitor = visitors?.filter(
-    (visitor: any) => visitor.userId === user.id
+    (visitor: any) =>
+      visitor.userId === user.id && visitor.categoryId === categoryId
   );
 
-  // Render the placeholder SVG if no visitors found
   if (!filteredVisitor || filteredVisitor.length === 0) {
     return (
       <div className="no-data-container">
@@ -32,8 +68,9 @@ const CardList: React.FC<ICardListProps> = ({ handleLogout }) => {
           handleLogOut={handleLogout}
           key={visitor?.id}
           id={visitor?.id}
-          name={visitor?.name}
+          name={getFormattedName(visitor.renderedFields)}
           on_site={visitor?.onSite}
+          mutateVisitors={mutateVisitors}
         />
       ))}
     </div>
@@ -44,7 +81,8 @@ type CardItemProps = {
   id: string;
   name: string;
   on_site: boolean;
-  handleLogOut: (id: string) => void;
+  handleLogOut: (id: string) => Promise<void>;
+  mutateVisitors: () => Promise<any>;
 };
 
 const CardItem: React.FC<CardItemProps> = ({
@@ -52,12 +90,32 @@ const CardItem: React.FC<CardItemProps> = ({
   on_site,
   handleLogOut,
   id,
+  mutateVisitors,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [localOnSite, setLocalOnSite] = useState(on_site);
+
+  const handleLogOutClick = async () => {
+    setIsLoading(true);
+    try {
+      // Optimistically update the local state
+      setLocalOnSite(false);
+      await handleLogOut(id);
+      await mutateVisitors(); // Refresh the visitors list
+    } catch (error) {
+      // Revert on error
+      setLocalOnSite(true);
+      console.error("Logout failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="card-item" key={id}>
       <div className="user-info">
         <p className="name">{name}</p>
-        {on_site ? (
+        {localOnSite ? (
           <p
             className="description"
             style={{
@@ -70,11 +128,20 @@ const CardItem: React.FC<CardItemProps> = ({
           <p className="description">Logged Out</p>
         )}
       </div>
-      {on_site ? (
-        <button className="status-button" onClick={() => handleLogOut(id)}>
-          Logout
+      {localOnSite && (
+        <button 
+          className="status-button" 
+          onClick={handleLogOutClick}
+          disabled={isLoading}
+          style={{ 
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            opacity: isLoading ? 0.7 : 1,
+            position: 'relative'
+          }}
+        >
+          {isLoading ? "Logging out..." : "Logout"}
         </button>
-      ) : null}
+      )}
     </div>
   );
 };

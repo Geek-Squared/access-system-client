@@ -54,7 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/scan-out",
-        element: <ProtectedRoute element={<ScanVisitorsOut />} />,
+        element: <ScanVisitorsOut />,
       },
       {
         path: "/form/:formId",

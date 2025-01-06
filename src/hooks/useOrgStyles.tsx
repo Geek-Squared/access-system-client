@@ -3,7 +3,6 @@ import useFetchOrganization from "./useFetchOrg";
 
 const useOrgStyles = () => {
   const { org } = useFetchOrganization();
-console.log('org', org)
   useEffect(() => {
     if (org) {
       document.documentElement.style.setProperty(

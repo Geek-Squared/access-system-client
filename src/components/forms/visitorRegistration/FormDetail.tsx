@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import useFetchCustomForms from "../../../hooks/useRenderForms";
 import useFetchCurrentUser from "../../../hooks/useFetchCurrentUser";
 import DynamicForm from "./DynamicForm";
@@ -9,19 +9,34 @@ const FormDetail: React.FC = () => {
   const params = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const [searchParams] = useSearchParams();
+  const formType = searchParams.get('type'); // 'entry' or 'exit'
+  
   const { user } = useFetchCurrentUser();
   const { createVisitor } = useCreateVisitor();
-
-  const formId =
-    params.formId || location.pathname.split("/").pop() || undefined;
-
+  
+  const formId = params.formId || location.pathname.split("/").pop() || undefined;
   const { forms, isLoading } = useFetchCustomForms();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
   const parsedFormId = formId ? Number(formId) : undefined;
-
   const selectedForm = forms.find((form: any) => form.id === parsedFormId);
+
+  // Filter fields based on form type
+  const filteredFields = selectedForm?.fields.filter((field: any) => {
+    const fieldNameLower = field.name.toLowerCase();
+    if (formType === 'exit') {
+      // For exit, only show exit time fields
+      return fieldNameLower.includes('exit') || 
+             fieldNameLower.includes('timeout') || 
+             fieldNameLower.includes('time out');
+    } else {
+      // For entry, filter out exit time fields
+      return !fieldNameLower.includes('exit') && 
+             !fieldNameLower.includes('timeout') && 
+             !fieldNameLower.includes('time out');
+    }
+  });
 
   const handleFormSubmit = async (data: any) => {
     if (!user || !selectedForm) {
@@ -31,28 +46,20 @@ const FormDetail: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // Prepare visitor data according to the DTO
       const visitorData = {
-        categoryId: selectedForm.id, // Use form ID as category ID
-        siteId: user.sitesId, // Assuming user has a sitesId
-        onSite: true, // You might want to make this dynamic
+        categoryId: selectedForm.id,
+        siteId: user.sitesId,
+        onSite: formType !== 'exit', // Set to false for exit forms
         userId: user.id,
-        renderedFields: data, // Pass all form data as renderedFields
+        renderedFields: data,
       };
 
       console.log("Submitting visitor data:", visitorData);
-
-      // Submit the visitor
       const response = await createVisitor(visitorData);
-
-      // Handle successful submission
       console.log("Visitor created:", response);
-
-      // Navigate back to home or show success message
       navigate("/");
     } catch (error) {
       console.error("Error submitting form:", error);
-      // Optionally show error to user
     } finally {
       setIsSubmitting(false);
     }
@@ -73,9 +80,9 @@ const FormDetail: React.FC = () => {
 
   return (
     <div className="form-detail-container">
-      <h2>{selectedForm.name}</h2>
+      <h2>{formType === 'exit' ? `${selectedForm.name} - Exit` : selectedForm.name}</h2>
       <DynamicForm
-        fields={selectedForm.fields}
+        fields={filteredFields || []}
         onSubmit={handleFormSubmit}
         isSubmitting={isSubmitting}
       />

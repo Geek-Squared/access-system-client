@@ -1,13 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import useFetchCustomForms from "../../hooks/useRenderForms";
 import "./styles.scss";
+import useFetchVisitors from "../../hooks/useFetchVisitor";
 
 const FormList = () => {
   const navigate = useNavigate();
+  const { visitors } = useFetchVisitors();
   const { forms } = useFetchCustomForms();
 
-  const handleCardClick = (formId: number) => {
-    navigate(`/form/${formId}`);
+  const handleCaptureClick = (formId: number) => {
+    navigate(`/form/${formId}?type=entry`);
+  };
+
+  const handleLogoutClick = (categoryId: any) => {
+    console.log("data-form", categoryId);
+    navigate(`/scan-out/?category=${categoryId}`);
   };
 
   return (
@@ -16,13 +23,20 @@ const FormList = () => {
         <div className="nav-card-container" key={form.id}>
           <h3 className="nav-card-heading">{form.name}</h3>
           <p>{form.description}</p>
-
-          <button
-            className="nav-card-button"
-            onClick={() => handleCardClick(form.id)}
-          >
-            Start
-          </button>
+          <div className="button-container">
+            <button
+              className="nav-card-button"
+              onClick={() => handleCaptureClick(form.id)}
+            >
+              Capture Details
+            </button>
+            <button
+              className="second-nav-card-button"
+              onClick={() => handleLogoutClick(form.id)}
+            >
+              Log Out
+            </button>
+          </div>
         </div>
       ))}
     </>

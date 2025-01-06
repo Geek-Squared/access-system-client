@@ -7,6 +7,7 @@ interface INavCardProps {
   description: string;
   handleClick: () => void;
   buttonText: string;
+  secondButtonText?: string;
 }
 
 const NavCard: FC<INavCardProps> = ({
@@ -15,6 +16,7 @@ const NavCard: FC<INavCardProps> = ({
   description,
   handleClick,
   buttonText,
+  secondButtonText,
 }) => {
   return (
     <div className="nav-card-container">
@@ -34,9 +36,14 @@ const NavCard: FC<INavCardProps> = ({
       </div>
       <h3 className="nav-card-heading">{heading}</h3>
       <p className="nav-card-description">{description}</p>
-      <button className="nav-card-button" onClick={handleClick}>
-        {buttonText}
-      </button>
+      <div className="button-container">
+        <button className="nav-card-button" onClick={handleClick}>
+          {buttonText}
+        </button>
+        <button className="nav-card-button" onClick={handleClick}>
+          {secondButtonText}
+        </button>
+      </div>
     </div>
   );
 };

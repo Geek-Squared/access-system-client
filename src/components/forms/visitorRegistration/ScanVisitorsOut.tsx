@@ -2,35 +2,39 @@ import CardList from "../../cards/GuestCard";
 import { useState } from "react";
 import useUpdateVisitor from "../../../hooks/useUpdateVisitor";
 
-const getCurrentDateTime = () => {
-  const now = new Date();
-  const year = now.getUTCFullYear();
-  const month = String(now.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(now.getUTCDate()).padStart(2, "0");
-  const hours = String(now.getUTCHours()).padStart(2, "0");
-  const minutes = String(now.getUTCMinutes()).padStart(2, "0");
-  const seconds = String(now.getUTCSeconds()).padStart(2, "0");
-  const milliseconds = String(now.getUTCMilliseconds()).padStart(3, "0");
-
-  // Combine into ISO-8601 format
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
-};
-
 const ScanVisitorsOut = () => {
   const [idNumber, setId] = useState<any>();
   const { data, updateUser } = useUpdateVisitor(idNumber);
-  console.log("data", data);
+
   const handleLogOut = async (id: string) => {
     setId(id);
     try {
+      const currentFields = data?.renderedFields || {};
+      const currentDateTime = new Date().toISOString().slice(0, 16);
+
+      const exitFieldName =
+        Object.keys(currentFields).find(
+          (key) =>
+            key.toLowerCase().includes("exit") ||
+            key.toLowerCase().includes("timeout") ||
+            key.toLowerCase().includes("time out")
+        ) || "Exit Time";
+
       const result = {
-        id: idNumber,
-        exitTime: getCurrentDateTime(),
+        categoryId: Number(data?.category.id),
+        siteId: Number(data?.sitesId),
+        sitesId: data?.sitesId,
         onSite: false,
+        renderedFields: {
+          ...currentFields,
+          [exitFieldName]: currentDateTime,
+        },
       };
-      updateUser(result);
+
+      await updateUser(result);
     } catch (error) {
       console.log("error", error);
+      throw error; // Important to throw the error so the CardItem can handle it
     }
   };
 

@@ -1,5 +1,8 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useSearchParams } from "react-router-dom";
+import { analyzeImage, ExtractedInfo } from "../../../utils/analyzeImage";
+import CameraCapture from "../../camera/Camera";
 import "./styles.scss";
 
 type FieldOption = {
@@ -12,7 +15,9 @@ type Field = {
   name: string;
   type: string;
   required: boolean;
+  useScanner?: boolean;
   options?: FieldOption[];
+  categoryId?: number;
 };
 
 interface IDynamicFormProps {
@@ -26,11 +31,102 @@ const DynamicForm: FC<IDynamicFormProps> = ({
   onSubmit,
   isSubmitting,
 }) => {
+  const [searchParams] = useSearchParams();
+  const formType = searchParams.get("type");
+
+  const [step, setStep] = useState<number>(1);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [detectedText, setDetectedText] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<any>();
+
+  // Simple field filtering based on URL parameter
+  const filteredFields = fields.filter((field) => {
+    const fieldNameLower = field.name.toLowerCase();
+    const isExitField =
+      fieldNameLower.includes("exit") ||
+      fieldNameLower.includes("timeout") ||
+      fieldNameLower.includes("time out");
+
+    return formType === "exit" ? isExitField : !isExitField;
+  });
+
+  // Auto-fill current time for the appropriate fields
+  useEffect(() => {
+    filteredFields.forEach((field) => {
+      if (field.type === "DATE") {
+        const currentDateTime = new Date().toISOString().slice(0, 16);
+        setValue(field.name, currentDateTime);
+      }
+    });
+  }, [setValue, filteredFields]);
+
+  const hasScanner = filteredFields.some((field) => field.useScanner);
+
+  const handleImageCapture = async (imageBase64: string) => {
+    setSelectedImage(imageBase64);
+    setIsLoading(true);
+    try {
+      await analyzeImage(
+        imageBase64,
+        setDetectedText,
+        (extractedInfo: ExtractedInfo | null) => {
+          if (extractedInfo) {
+            filteredFields.forEach((field) => {
+              const fieldNameLower = field.name.toLowerCase().trim();
+
+              // ID Number matching
+              if (
+                fieldNameLower.includes("id") ||
+                fieldNameLower.includes("idnumber") ||
+                fieldNameLower.includes("id number")
+              ) {
+                setValue(field.name, extractedInfo.idNumber);
+              }
+              // Full Name matching
+              else if (
+                fieldNameLower === "name" ||
+                fieldNameLower === "full name" ||
+                fieldNameLower.includes("fullname") ||
+                fieldNameLower.includes("full name")
+              ) {
+                setValue(field.name, extractedInfo.fullName);
+              }
+              // First Name matching
+              else if (
+                fieldNameLower === "first name" ||
+                fieldNameLower.includes("firstname") ||
+                fieldNameLower.includes("First Name")
+              ) {
+                setValue(field.name, extractedInfo.firstNames);
+              }
+              // Last Name matching
+              else if (
+                fieldNameLower === "last name" ||
+                fieldNameLower.includes("lastname") ||
+                fieldNameLower.includes("last name") ||
+                fieldNameLower === "surname" ||
+                fieldNameLower.includes("surname")
+              ) {
+                setValue(field.name, extractedInfo.lastName);
+              }
+            });
+          }
+        }
+      );
+      setStep(2);
+    } catch (error) {
+      console.error("Error analyzing image:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const onFormSubmit: SubmitHandler<any> = (data) => {
     onSubmit(data);
@@ -39,6 +135,7 @@ const DynamicForm: FC<IDynamicFormProps> = ({
   const renderField = (field: Field) => {
     switch (field.type) {
       case "TEXT":
+      case "IDNUMBER":
         return (
           <div key={field.id} className="form-container">
             <label htmlFor={field.name}>{field.name}</label>
@@ -90,7 +187,7 @@ const DynamicForm: FC<IDynamicFormProps> = ({
             <label htmlFor={field.name}>{field.name}</label>
             <input
               className="form-input"
-              type="date"
+              type="datetime-local"
               {...register(field.name, { required: field.required })}
             />
             {errors[field.name] && (
@@ -122,9 +219,31 @@ const DynamicForm: FC<IDynamicFormProps> = ({
     }
   };
 
+  if (hasScanner && step === 1) {
+    return (
+      <div className="scanner-step">
+        <h2>Scan ID Document</h2>
+        {isLoading ? (
+          <div>Processing image...</div>
+        ) : (
+          <>
+            <CameraCapture title="Scan ID" onCapture={handleImageCapture} />
+            <button className="skip-button" onClick={() => setStep(2)}>
+              Skip Scanner
+            </button>
+          </>
+        )}
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="form-container">
-      {fields.map((field) => renderField(field))}
+      {selectedImage && (
+        <div className="scanned-data-banner">ID successfully scanned</div>
+      )}
+
+      {filteredFields.map((field) => renderField(field))}
 
       <button type="submit" className="submit-button" disabled={isSubmitting}>
         {isSubmitting ? "Submitting..." : "Submit"}

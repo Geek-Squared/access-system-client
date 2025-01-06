@@ -21,6 +21,7 @@ function useLogin() {
       }),
       false
     );
+    console.log('response', response)
     localStorage.setItem("token", response.token);
     localStorage.setItem("id", response.id);
     return response;

@@ -67,8 +67,26 @@
       background-color: #5a5870;
     }
   }
-}
 
+  .second-nav-card-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #5a5870;
+    }
+  }
+  .button-container {
+    display: flex;
+    gap: 10px;
+  }
+}
 
 .card-item {
   display: flex;
