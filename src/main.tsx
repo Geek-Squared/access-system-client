@@ -19,22 +19,20 @@ import Login from "./pages/login";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import Profile from "./pages/profile";
 import FormDetail from "./components/forms/visitorRegistration/FormDetail";
+import VerifyVisitorCode from "./pages/code/verifyVisitorCode";
 
 const Layout = () => {
   const location = useLocation();
-
-  // Hide AppBar and BottomNavBar on login and register pages
   const hideNavBarOnRoutes = ["/login", "/register"];
   const hideNavBar = hideNavBarOnRoutes.includes(location.pathname);
 
   return (
     <div>
-      {!hideNavBar && <AppBar />} {/* Conditionally render AppBar */}
+      {!hideNavBar && <AppBar />}
       <div className="main-content">
         <Outlet />
       </div>
       {!hideNavBar && <BottomNavBar />}{" "}
-      {/* Conditionally render BottomNavBar */}
     </div>
   );
 };
@@ -47,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <ProtectedRoute element={<Home />} />,
+      },
+      {
+        path: "/verify-code",
+        element: <VerifyVisitorCode />,
       },
       {
         path: "/capture-details",

@@ -6,6 +6,7 @@ const Home = () => {
   return (
     <>
       <FormList />
+      {/* <a href="/verify-code">Verify</a> */}
     </>
   );
 };

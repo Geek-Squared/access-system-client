@@ -5,7 +5,7 @@ import useFetchVisitors from "../../hooks/useFetchVisitor";
 import "./styles.scss";
 
 interface ICardListProps {
-  handleLogout: (id: string) => Promise<void>; // Changed to Promise
+  handleLogout: (id: string) => Promise<void>;
 }
 
 const getFormattedName = (renderedFields: any): string => {
@@ -42,6 +42,7 @@ const getFormattedName = (renderedFields: any): string => {
 };
 
 const CardList: React.FC<ICardListProps> = ({ handleLogout }) => {
+  //@ts-ignore
   const { visitors, mutate: mutateVisitors } = useFetchVisitors();
   const [searchParams] = useSearchParams();
   const categoryId = Number(searchParams.get("category"));

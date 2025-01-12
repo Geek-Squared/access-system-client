@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CameraCapture from "./camera/Camera";
-import analyzeImage from "../utils/analyzeImage";
 import DynamicForm from "./forms/visitorRegistration/DynamicForm"; // Correct import
 import "./styles.scss";
 import useFetchCurrentUser from "../hooks/useFetchCurrentUser";
@@ -14,9 +13,8 @@ const TextRecognition = () => {
   const { forms } = useFetchCustomForms();
 
   const [step, setStep] = useState<number>(0);
-  const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [_, setSelectedImage] = useState<any>(null);
   const [selectedFormId, setSelectedFormId] = useState<number | null>(null); // Track selected form
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -67,7 +65,7 @@ const TextRecognition = () => {
   }, [step, navigate]);
 
   return (
-    <div className="text-recog-container">
+    <div className="container">
       {step === 0 && (
         <div className="option-container">
           <div className="option-container__actions">

@@ -222,16 +222,16 @@ const DynamicForm: FC<IDynamicFormProps> = ({
   if (hasScanner && step === 1) {
     return (
       <div className="scanner-step">
-        <h2>Scan ID Document</h2>
+        <h2 className="scan-header">Scan ID Document</h2>
         {isLoading ? (
           <div>Processing image...</div>
         ) : (
-          <>
+          <div className="button-container">
             <CameraCapture title="Scan ID" onCapture={handleImageCapture} />
             <button className="skip-button" onClick={() => setStep(2)}>
               Skip Scanner
             </button>
-          </>
+          </div>
         )}
       </div>
     );
